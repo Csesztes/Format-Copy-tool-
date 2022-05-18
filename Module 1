@@ -1,0 +1,83 @@
+
+Sub Formazo2()
+
+    Application.ScreenUpdating = False
+    
+
+    MsgBox ("Kérlek válaszd ki az új tervet!" & vbNewLine & "(Amit formázni szeretnél.)"), (vbInformation)
+    
+    With Application.FileDialog(msoFileDialogOpen)
+        .InitialFileName = "K:\Manufacturing\14_cscs\ABA_szereles"
+        .ButtonName = "Új Terv Kiválasztás"
+        .Title = "Új Terv Kiválasztás"
+        
+        If .Show = 0 Then
+            MsgBox "Kiválasztás megszakítva.", vbInformation
+            Application.ScreenUpdating = True
+            Exit Sub
+        Else
+            Dim UjTervPath As String
+            UjTervPath = .SelectedItems(1)
+            
+            Dim Ujterv As Workbook
+            Set Ujterv = Workbooks.Open(UjTervPath)
+        End If
+    End With
+        
+    MsgBox ("Kérlek válaszd ki az előző tervet!" & vbNewLine & "(Ahonnan a formátumot szeretnéd másolni.)"), (vbInformation)
+        
+    With Application.FileDialog(msoFileDialogOpen)
+        .InitialFileName = "K:\Manufacturing\14_cscs\ABA_szereles"
+        .ButtonName = "Régi Terv Kiválasztás"
+        .Title = "Régi Terv Kiválasztás"
+        
+        If .Show = 0 Then
+            MsgBox "Kiválasztás megszakítva.", vbInformation
+             Application.ScreenUpdating = True
+            Exit Sub
+        Else
+            Dim RegiTervPath As String
+            RegiTervPath = .SelectedItems(1)
+            
+            Dim RegiTerv As Workbook
+            Set RegiTerv = Workbooks.Open(RegiTervPath)
+        End If
+    End With
+    
+    Dim UjtervLastrow As Long
+    UjtervLastrow = Ujterv.Sheets("Terv").Range("B" & Rows.Count).End(xlUp).Row
+    
+    Dim RegiTervLastRow As Long
+    RegiTervLastRow = RegiTerv.Sheets("Terv").Range("B" & Rows.Count).End(xlUp).Row
+    
+    
+    Dim UjtervTartomany As Range
+    Set UjtervTartomany = Ujterv.Sheets("Terv").Range("B2", "B" & UjtervLastrow)
+    
+    Dim RegiTervTartomany As Range
+    Set RegiTervTartomany = RegiTerv.Sheets("Terv").Range("B2", "B" & RegiTervLastRow)
+    
+    
+    Dim cell As Range
+    
+    For Each cell In UjtervTartomany
+        On Error Resume Next
+        cell.Offset(0, 5).Value = RegiTervTartomany.Find(cell).Offset(0, 5).Value
+        
+        cell.Offset(0, 1).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 1).Interior.Color
+        cell.Offset(0, 2).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 2).Interior.Color
+        cell.Offset(0, 3).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 3).Interior.Color
+        cell.Offset(0, 4).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 4).Interior.Color
+            
+        cell.Offset(0, 5).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 5).Interior.Color
+        cell.Offset(0, 6).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 6).Interior.Color
+        cell.Offset(0, 7).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 7).Interior.Color
+        cell.Offset(0, 8).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 8).Interior.Color
+        cell.Offset(0, 9).Interior.Color = RegiTervTartomany.Find(cell).Offset(0, 9).Interior.Color
+    Next cell
+    
+    MsgBox ("Formátum másolás kész!"), (vbInformation)
+        
+ Application.ScreenUpdating = True
+ 
+End Sub
